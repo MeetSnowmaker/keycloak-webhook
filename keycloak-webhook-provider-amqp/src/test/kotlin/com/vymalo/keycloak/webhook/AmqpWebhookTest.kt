@@ -12,7 +12,6 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.DockerImageName
@@ -170,12 +169,11 @@ class AmqpWebhookTest {
     }
 
     /**
-     * Known upstream bug, kept here so it stays visible: the README calls the vhost
-     * optional, but without it the client rejects the null vhost and `create()` throws
-     * straight into Keycloak ("'virtualHost' must be non-null"). Remove @Disabled with the fix.
+     * Regression guard for an upstream bug: the README calls the vhost optional, but
+     * without it the client rejected the null vhost and `create()` threw straight into
+     * Keycloak ("'virtualHost' must be non-null").
      */
     @Test
-    @Disabled("Known bug: omitting WEBHOOK_AMQP_VHOST throws from create(); fixed later in this PR")
     fun `vhost is optional and defaults to the root vhost`() = withBroker(amqpVHostKey to null) {
         AmqpWebhookFactory().inSession { it.onEvent(Fixtures.loginEvent()) }
         assertEquals(Fixtures.PayloadJson.LOGIN, String(nextMessage().body, Charsets.UTF_8))

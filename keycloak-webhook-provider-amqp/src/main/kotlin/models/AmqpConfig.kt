@@ -8,8 +8,8 @@ data class AmqpConfig(
     val password: String,
     val host: String,
     val port: Int,
-    /** Null leaves the client to reject it on connect; see the disabled vhost test. */
-    val vHost: String?,
+    /** Defaults to the root vhost `/`, as the README has always said. */
+    val vHost: String,
     val ssl: Boolean,
     val exchange: String,
     /** Wait for the broker to confirm each message before the request moves on (#59). */
@@ -28,7 +28,7 @@ data class AmqpConfig(
                 password = required(amqpPasswordKey),
                 host = required(amqpHostKey),
                 port = int(amqpPortKey),
-                vHost = optional(amqpVHostKey),
+                vHost = orDefault(amqpVHostKey, "/"),
                 ssl = flag(amqpSsl),
                 exchange = required(amqpExchangeKey),
                 publisherConfirm = flag(amqpEnablePublisherConfirm),
