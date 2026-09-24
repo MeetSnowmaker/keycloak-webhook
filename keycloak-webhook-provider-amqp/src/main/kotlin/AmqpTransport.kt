@@ -121,7 +121,7 @@ class AmqpTransport(private val config: AmqpConfig) : Transport {
          * The same for every message. `__TypeId__` is the header Spring AMQP reads to pick
          * the target class, so Spring consumers can deserialize without extra mapping.
          */
-        private val MESSAGE_PROPERTIES: BasicProperties = BasicProperties.Builder()
+        internal val MESSAGE_PROPERTIES: BasicProperties = BasicProperties.Builder()
             .appId("Keycloak/Kotlin")
             .headers(mapOf<String, Any>("__TypeId__" to WebhookPayload::class.java.name))
             .contentType(MediaType.APPLICATION_JSON)

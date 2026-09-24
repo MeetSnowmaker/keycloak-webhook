@@ -349,8 +349,10 @@ We welcome contributions! To get started:
   ```bash
   ./gradlew clean shadow
   ```
-- Run the tests with `./gradlew test`. The AMQP tests start RabbitMQ through
-  [Testcontainers](https://testcontainers.com), so Docker must be running.
+- Run the tests with `./gradlew test`. The AMQP broker tests start RabbitMQ through
+  [Testcontainers](https://testcontainers.com). Docker is optional locally: without it those tests are skipped
+  (listed as `SKIPPED`), and everything else still runs. With Docker you can still skip them for a quicker run by
+  setting `SKIP_DOCKER_TESTS=true`. CI never skips them.
 
 3. **Follow Code Conventions:**
 

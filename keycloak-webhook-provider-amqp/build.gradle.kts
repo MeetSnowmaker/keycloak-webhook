@@ -27,6 +27,8 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    // Broker tests skip themselves without Docker; say so on the console instead of only in the report.
+    testLogging { events("skipped") }
 }
 kotlin {
     jvmToolchain(17)
