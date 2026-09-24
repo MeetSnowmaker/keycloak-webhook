@@ -25,6 +25,9 @@ dependencies {
     implementation("org.slf4j", "slf4j-log4j12", "2.0.17")
 
     testImplementation("io.kotlintest", "kotlintest-runner-junit5", "3.4.2")
+    testImplementation(testFixtures(project(":keycloak-webhook-provider-core")))
+    // Kept on the 4.x line so it matches the okhttp version the client uses.
+    testImplementation("com.squareup.okhttp3", "mockwebserver", "4.12.0")
 }
 
 tasks.test {

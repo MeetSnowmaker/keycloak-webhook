@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation(testFixtures(project(":keycloak-webhook-provider-core")))
 
     implementation(project(":keycloak-webhook-provider-core"))
 

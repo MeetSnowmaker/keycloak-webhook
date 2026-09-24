@@ -12,6 +12,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation(testFixtures(project(":keycloak-webhook-provider-core")))
+    testImplementation("org.testcontainers", "testcontainers-rabbitmq", "2.0.5")
+    testImplementation("org.testcontainers", "testcontainers-junit-jupiter", "2.0.5")
 
     implementation(project(":keycloak-webhook-provider-core"))
 
