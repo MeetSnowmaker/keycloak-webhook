@@ -2,6 +2,28 @@
 
 ## [next]
 
+### Fixed
+
+- The build was broken on `main`: the HTTP module did not compile (`sessionId` from #67 was missing in the OpenAPI
+  schema), and the release jars could not be built with Gradle 9. Both fixes come from #90
+- Every Keycloak session opened and closed its own AMQP connection, HTTP client and Syslog sender. Each provider now
+  keeps one for the lifetime of the server and closes it on shutdown
+- An unreachable RabbitMQ broker made listener creation throw into Keycloak; the event is now logged and dropped
+- AMQP publisher confirms from concurrent requests could interfere with each other, and confirm mode was lost after a
+  reconnect
+- A connection dropped by the broker could come back through automatic recovery as a second, leaked connection
+- `WEBHOOK_AMQP_VHOST` is optional as documented, defaulting to `/` (leaving it out used to fail)
+
+### Changed
+
+- Missing or malformed settings are reported in one error that names every problem key, instead of a
+  `NullPointerException`
+
+### Added
+
+- Behaviour tests for every provider, including RabbitMQ through Testcontainers
+- README: publisher confirm settings, defaults, routing keys, and how delivery behaves when a destination is down
+
 ## [0.8.3] - 2025-03-04
 
 ### Added
