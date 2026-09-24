@@ -21,7 +21,7 @@
 
 ### Added
 
-- Behaviour tests for every provider, including RabbitMQ through Testcontainers
+- Behaviour tests for every provider, including RabbitMQ through Testcontainers, run by CI on every push
 - README: publisher confirm settings, defaults, routing keys, and how delivery behaves when a destination is down
 
 ## [0.8.3] - 2025-03-04

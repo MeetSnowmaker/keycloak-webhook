@@ -22,7 +22,7 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v3
         with:
-          arguments: shadow
+          arguments: build shadow
       - name: Centralize Artifacts
         run: |
           mkdir -p dist
