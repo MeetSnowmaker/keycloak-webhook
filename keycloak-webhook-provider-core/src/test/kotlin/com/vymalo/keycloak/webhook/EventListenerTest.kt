@@ -11,23 +11,22 @@ import kotlin.test.assertEquals
 
 /**
  * How Keycloak events become webhook payloads, and which ones get through the
- * `WEBHOOK_EVENTS_TAKEN` filter. Transport-independent: a recording handler
+ * `WEBHOOK_EVENTS_TAKEN` filter. Transport-independent: a recording transport
  * stands in for AMQP/HTTP/Syslog.
  */
 class EventListenerTest {
 
     /** Keeps what would have been sent, serialized the way AMQP and Syslog serialize it. */
-    private class RecordingHandler : WebhookHandler {
+    private class RecordingTransport : Transport {
         val sent = mutableListOf<String>()
-        override fun sendWebhook(request: WebhookPayload) {
-            sent += Gson().toJson(request)
+        override fun publish(payload: WebhookPayload) {
+            sent += Gson().toJson(payload)
         }
-        override fun getId() = "recording"
     }
 
-    private class Factory(handler: WebhookHandler) : AbstractWebhookEventListenerFactory(handler)
+    private class Factory(transport: Transport) : WebhookEventListenerFactory("recording", { transport })
 
-    private val handler = RecordingHandler()
+    private val handler = RecordingTransport()
     private val factory = Factory(handler)
 
     @Test
@@ -71,9 +70,8 @@ class EventListenerTest {
 
     @Test
     fun `a failing transport never breaks the Keycloak request`() {
-        val failing = Factory(object : WebhookHandler {
-            override fun sendWebhook(request: WebhookPayload) = error("broker down")
-            override fun getId() = "failing"
+        val failing = Factory(object : Transport {
+            override fun publish(payload: WebhookPayload) = error("broker down")
         })
         // Passing means no exception escaped to Keycloak.
         failing.inSession { it.onEvent(Fixtures.loginEvent()) }

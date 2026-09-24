@@ -48,10 +48,17 @@ class ConfigReaderTest {
 
     @Test
     fun `enums match constant names exactly and list the choices when wrong`() {
-        assertEquals(Format.RFC_3164, source().read { enum("FORMAT", Format.RFC_3164, Format.values()) })
+        assertEquals(Format.RFC_3164, source().read { enum("FORMAT", Format.values(), Format.RFC_3164) })
         val error = assertFailsWith<ConfigException> {
-            source("FORMAT" to "rfc_5424").read { enum("FORMAT", Format.RFC_3164, Format.values()) }
+            source("FORMAT" to "rfc_5424").read { enum("FORMAT", Format.values(), Format.RFC_3164) }
         }
         assertEquals(listOf("FORMAT must be one of RFC_3164, RFC_5424, got 'rfc_5424'"), error.problems)
+    }
+
+    @Test
+    fun `enums can ignore case and be required`() {
+        assertEquals(Format.RFC_5424, source("FORMAT" to "rfc_5424").read { enum("FORMAT", Format.values(), ignoreCase = true) })
+        val error = assertFailsWith<ConfigException> { source().read { enum("FORMAT", Format.values()) } }
+        assertEquals(listOf("FORMAT is required"), error.problems)
     }
 }

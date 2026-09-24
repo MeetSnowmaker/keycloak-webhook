@@ -44,11 +44,15 @@ class ConfigReader internal constructor(private val source: ConfigSource) {
     /** A whole number; required unless a [default] is given. */
     fun long(key: String, default: Long? = null): Long = number(key, default, String::toLongOrNull) ?: 0
 
-    /** One of [values] by exact constant name, e.g. `RFC_5424`. */
-    fun <E : Enum<E>> enum(key: String, default: E, values: Array<E>): E {
-        val raw = source[key].orEmpty().ifEmpty { return default }
-        return values.firstOrNull { it.name == raw }
-            ?: default.also { problems += "$key must be one of ${values.joinToString { it.name }}, got '$raw'" }
+    /**
+     * One of [values] by constant name, e.g. `RFC_5424`. Required unless a [default] is
+     * given; names must match exactly unless [ignoreCase] is set.
+     */
+    fun <E : Enum<E>> enum(key: String, values: Array<E>, default: E? = null, ignoreCase: Boolean = false): E {
+        val raw = source[key].orEmpty()
+        if (raw.isEmpty()) return default ?: values.first().also { problems += "$key is required" }
+        return values.firstOrNull { it.name.equals(raw, ignoreCase) }
+            ?: values.first().also { problems += "$key must be one of ${values.joinToString { it.name }}, got '$raw'" }
     }
 
     private fun <N : Number> number(key: String, default: N?, parse: (String) -> N?): N? {
