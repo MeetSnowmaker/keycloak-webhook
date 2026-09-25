@@ -38,7 +38,7 @@ abstract class WebhookEventListenerFactory(
 
     override fun getId(): String = providerId
 
-    override fun getOperationalInfo() = mapOf("version" to "0.10.0-rc.1")
+    override fun getOperationalInfo() = mapOf("version" to "0.12.0-rc.1")
 
     override fun init(config: Config.Scope) {}
 
